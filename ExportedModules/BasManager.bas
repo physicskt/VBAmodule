@@ -1,7 +1,7 @@
 Attribute VB_Name = "BasManager"
 Option Explicit
 
-' === �萔��` ===
+' === Constants ===
 Const EXT_BAS As String = ".bas"
 Const EXT_CLS As String = ".cls"
 Const EXT_FRM As String = ".frm"
@@ -19,21 +19,21 @@ Sub DoImportAllModules()
     Dim fd As FileDialog
     Dim path As String
     
-    ' �t�H���_�I���_�C�A���O�̍쐬
+    ' Create folder selection dialog
     Set fd = Application.fileDialog(msoFileDialogFolderPicker)
     
     path = ""
     With fd
-        .Title = "�C���|�[�g����t�H���_��I�����Ă�������"
+        .Title = "Select folder to import from"
         .AllowMultiSelect = False
         .InitialFileName = ThisWorkbook.path & Application.PathSeparator
         
-        ' �_�C�A���O�\��
-        If .Show = -1 Then ' ���[�U�[���uOK�v���������ꍇ
+        ' Show dialog
+        If .Show = -1 Then ' If user clicked "OK"
             path = .SelectedItems(1)
-            MsgBox "�I�����ꂽ�t�H���_: " & path
+            MsgBox "Selected folder: " & path
         Else
-            MsgBox "�L�����Z������܂���"
+            MsgBox "Cancelled"
             Exit Sub
         End If
     End With
@@ -42,7 +42,7 @@ Sub DoImportAllModules()
     
 End Sub
 
-' === ���ׂẴ��W���[�����G�N�X�|�[�g ===
+' === Export all modules ===
 Sub ExportAllModules(exportPath As String)
     On Error GoTo ErrHandler
 
@@ -53,20 +53,20 @@ Sub ExportAllModules(exportPath As String)
         ExportModule vbComp, exportPath
     Next vbComp
 
-    MsgBox "���W���[���̃G�N�X�|�[�g���������܂����B" & vbCrLf & exportPath, vbInformation
+    MsgBox "Successfully exported modules." & vbCrLf & exportPath, vbInformation
     Exit Sub
 
 ErrHandler:
-    MsgBox "�G�N�X�|�[�g���ɃG���[���������܂���: " & Err.Description, vbCritical
+    MsgBox "Error during export: " & Err.Description, vbCritical
 End Sub
 
 
-' === ���ׂẴ��W���[�����C���|�[�g�i���������̓X�L�b�v�j ===
+' === Import all modules (skip if exists) ===
 Sub ImportAllModules(importPath As String)
     On Error GoTo ErrHandler
 
     If Dir(importPath, vbDirectory) = "" Then
-        MsgBox "�w�肳�ꂽ�t�H���_�����݂��܂���: " & importPath, vbExclamation
+        MsgBox "Specified folder does not exist: " & importPath, vbExclamation
         Exit Sub
     End If
 
@@ -87,7 +87,6 @@ Sub ImportAllModules(importPath As String)
         importPath = importPath & Application.PathSeparator
     End If
     
-    ' Look for files in the directory
     fileName = Dir(importPath & "*.*")
 
     Do While fileName <> ""
@@ -102,14 +101,14 @@ Sub ImportAllModules(importPath As String)
         fileName = Dir
     Loop
 
-    MsgBox "���W���[���̃C���|�[�g���������܂����B", vbInformation
+    MsgBox "Successfully imported modules.", vbInformation
     Exit Sub
 
 ErrHandler:
-    MsgBox "�C���|�[�g���ɃG���[���������܂���: " & Err.Description, vbCritical
+    MsgBox "Error during import: " & Err.Description, vbCritical
 End Sub
 
-' === �P��t�@�C���̃��W���[�����C���|�[�g�i�����ő��݃`�F�b�N�j ===
+' === Import single module file (check for existence) ===
 Sub ImportSingleModule(fullPath As String, existingModules As Object)
     Dim baseName As String
     baseName = GetFileBaseName(Dir(fullPath))
@@ -119,7 +118,7 @@ Sub ImportSingleModule(fullPath As String, existingModules As Object)
     End If
 End Sub
 
-' === ���W���[�����G�N�X�|�[�g�i��ނɉ����Ċg���q������j ===
+' === Export module (set extension by type) ===
 Sub ExportModule(vbComp As Object, exportPath As String)
     Dim fileExt As String
     Select Case vbComp.Type
@@ -134,13 +133,12 @@ Sub ExportModule(vbComp As Object, exportPath As String)
     vbComp.Export fullPath
 End Sub
 
-' === �w��t�H���_�����݂��Ȃ��ꍇ�͍쐬 ===
+' === Create folder if it doesn't exist ===
 Sub EnsureFolderExists(ByVal folderPath As String)
     If Dir(folderPath, vbDirectory) = "" Then MkDir folderPath
 End Sub
 
-' === �t�@�C��������g���q����������{�����擾 ===
+' === Get base name from file name without extension ===
 Function GetFileBaseName(fileName As String) As String
     GetFileBaseName = Left(fileName, InStrRev(fileName, ".") - 1)
 End Function
-
