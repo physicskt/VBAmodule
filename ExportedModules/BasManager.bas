@@ -1,38 +1,39 @@
 Attribute VB_Name = "BasManager"
 Option Explicit
 
-' === ’è”’è‹` ===
+' === ï¿½è”ï¿½ï¿½` ===
 Const EXT_BAS As String = ".bas"
 Const EXT_CLS As String = ".cls"
 Const EXT_FRM As String = ".frm"
 Const MODULE_TYPE_STANDARD As Long = 1
 Const MODULE_TYPE_CLASS As Long = 2
 Const MODULE_TYPE_FORM As Long = 3
-Dim path As String
 
 Sub DoExportAllModules()
+    Dim path As String
     path = ThisWorkbook.path & Application.PathSeparator & "ExportedModules"
     Call ExportAllModules(path)
 End Sub
 
 Sub DoImportAllModules()
-    Dim fd As fileDialog
+    Dim fd As FileDialog
+    Dim path As String
     
-    ' ƒtƒHƒ‹ƒ_‘I‘ğƒ_ƒCƒAƒƒO‚Ìì¬
+    ' ï¿½tï¿½Hï¿½ï¿½ï¿½_ï¿½Iï¿½ï¿½ï¿½_ï¿½Cï¿½Aï¿½ï¿½ï¿½Oï¿½Ìì¬
     Set fd = Application.fileDialog(msoFileDialogFolderPicker)
     
     path = ""
     With fd
-        .Title = "ƒCƒ“ƒ|[ƒg‚·‚éƒtƒHƒ‹ƒ_‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢"
+        .Title = "ï¿½Cï¿½ï¿½ï¿½|ï¿½[ï¿½gï¿½ï¿½ï¿½ï¿½tï¿½Hï¿½ï¿½ï¿½_ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
         .AllowMultiSelect = False
         .InitialFileName = ThisWorkbook.path & Application.PathSeparator
         
-        ' ƒ_ƒCƒAƒƒO•\¦
-        If .Show = -1 Then ' ƒ†[ƒU[‚ªuOKv‚ğ‰Ÿ‚µ‚½ê‡
+        ' ï¿½_ï¿½Cï¿½Aï¿½ï¿½ï¿½Oï¿½\ï¿½ï¿½
+        If .Show = -1 Then ' ï¿½ï¿½ï¿½[ï¿½Uï¿½[ï¿½ï¿½ï¿½uOKï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡
             path = .SelectedItems(1)
-            MsgBox "‘I‘ğ‚³‚ê‚½ƒtƒHƒ‹ƒ_: " & path
+            MsgBox "ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½tï¿½Hï¿½ï¿½ï¿½_: " & path
         Else
-            MsgBox "ƒLƒƒƒ“ƒZƒ‹‚³‚ê‚Ü‚µ‚½"
+            MsgBox "ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½"
             Exit Sub
         End If
     End With
@@ -41,7 +42,7 @@ Sub DoImportAllModules()
     
 End Sub
 
-' === ‚·‚×‚Ä‚Ìƒ‚ƒWƒ…[ƒ‹‚ğƒGƒNƒXƒ|[ƒg ===
+' === ï¿½ï¿½ï¿½×‚Ä‚Ìƒï¿½ï¿½Wï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Gï¿½Nï¿½Xï¿½|ï¿½[ï¿½g ===
 Sub ExportAllModules(exportPath As String)
     On Error GoTo ErrHandler
 
@@ -52,20 +53,20 @@ Sub ExportAllModules(exportPath As String)
         ExportModule vbComp, exportPath
     Next vbComp
 
-    MsgBox "ƒ‚ƒWƒ…[ƒ‹‚ÌƒGƒNƒXƒ|[ƒg‚ªŠ®—¹‚µ‚Ü‚µ‚½B" & vbCrLf & exportPath, vbInformation
+    MsgBox "ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ÌƒGï¿½Nï¿½Xï¿½|ï¿½[ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½ï¿½B" & vbCrLf & exportPath, vbInformation
     Exit Sub
 
 ErrHandler:
-    MsgBox "ƒGƒNƒXƒ|[ƒg’†‚ÉƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½: " & Err.Description, vbCritical
+    MsgBox "ï¿½Gï¿½Nï¿½Xï¿½|ï¿½[ï¿½gï¿½ï¿½ï¿½ÉƒGï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½: " & Err.Description, vbCritical
 End Sub
 
 
-' === ‚·‚×‚Ä‚Ìƒ‚ƒWƒ…[ƒ‹‚ğƒCƒ“ƒ|[ƒgi“¯–¼Šù‘¶‚ÍƒXƒLƒbƒvj ===
+' === ï¿½ï¿½ï¿½×‚Ä‚Ìƒï¿½ï¿½Wï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½|ï¿½[ï¿½gï¿½iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÍƒXï¿½Lï¿½bï¿½vï¿½j ===
 Sub ImportAllModules(importPath As String)
     On Error GoTo ErrHandler
 
     If Dir(importPath, vbDirectory) = "" Then
-        MsgBox "w’è‚³‚ê‚½ƒtƒHƒ‹ƒ_‚ª‘¶İ‚µ‚Ü‚¹‚ñ: " & importPath, vbExclamation
+        MsgBox "ï¿½wï¿½è‚³ï¿½ê‚½ï¿½tï¿½Hï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½: " & importPath, vbExclamation
         Exit Sub
     End If
 
@@ -78,21 +79,37 @@ Sub ImportAllModules(importPath As String)
     Next vbComp
 
     Dim fileName As String
+    Dim fileExtension As String
+    Dim fullPath As String
+    
+    ' Ensure importPath ends with a path separator
+    If Right(importPath, 1) <> Application.PathSeparator Then
+        importPath = importPath & Application.PathSeparator
+    End If
+    
+    ' Look for files in the directory
     fileName = Dir(importPath & "*.*")
 
     Do While fileName <> ""
-        Call ImportSingleModule(importPath & fileName, existingModules)
+        fileExtension = LCase(Right(fileName, 4))
+        
+        ' Only process .bas, .cls, and .frm files
+        If fileExtension = EXT_BAS Or fileExtension = EXT_CLS Or fileExtension = EXT_FRM Then
+            fullPath = importPath & fileName
+            Call ImportSingleModule(fullPath, existingModules)
+        End If
+        
         fileName = Dir
     Loop
 
-    MsgBox "ƒ‚ƒWƒ…[ƒ‹‚ÌƒCƒ“ƒ|[ƒg‚ªŠ®—¹‚µ‚Ü‚µ‚½B", vbInformation
+    MsgBox "ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ÌƒCï¿½ï¿½ï¿½|ï¿½[ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½ï¿½B", vbInformation
     Exit Sub
 
 ErrHandler:
-    MsgBox "ƒCƒ“ƒ|[ƒg’†‚ÉƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½: " & Err.Description, vbCritical
+    MsgBox "ï¿½Cï¿½ï¿½ï¿½|ï¿½[ï¿½gï¿½ï¿½ï¿½ÉƒGï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½: " & Err.Description, vbCritical
 End Sub
 
-' === ’Pˆêƒtƒ@ƒCƒ‹‚Ìƒ‚ƒWƒ…[ƒ‹‚ğƒCƒ“ƒ|[ƒgi«‘‚Å‘¶İƒ`ƒFƒbƒNj ===
+' === ï¿½Pï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Ìƒï¿½ï¿½Wï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½|ï¿½[ï¿½gï¿½iï¿½ï¿½ï¿½ï¿½ï¿½Å‘ï¿½ï¿½İƒ`ï¿½Fï¿½bï¿½Nï¿½j ===
 Sub ImportSingleModule(fullPath As String, existingModules As Object)
     Dim baseName As String
     baseName = GetFileBaseName(Dir(fullPath))
@@ -102,7 +119,7 @@ Sub ImportSingleModule(fullPath As String, existingModules As Object)
     End If
 End Sub
 
-' === ƒ‚ƒWƒ…[ƒ‹‚ğƒGƒNƒXƒ|[ƒgií—Ş‚É‰‚¶‚ÄŠg’£q‚ğŒˆ’èj ===
+' === ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Gï¿½Nï¿½Xï¿½|ï¿½[ï¿½gï¿½iï¿½ï¿½Ş‚É‰ï¿½ï¿½ï¿½ï¿½ÄŠgï¿½ï¿½ï¿½qï¿½ï¿½ï¿½ï¿½ï¿½ï¿½j ===
 Sub ExportModule(vbComp As Object, exportPath As String)
     Dim fileExt As String
     Select Case vbComp.Type
@@ -113,16 +130,16 @@ Sub ExportModule(vbComp As Object, exportPath As String)
     End Select
 
     Dim fullPath As String
-    fullPath = exportPath & "\" & vbComp.Name & fileExt
+    fullPath = exportPath & Application.PathSeparator & vbComp.Name & fileExt
     vbComp.Export fullPath
 End Sub
 
-' === w’èƒtƒHƒ‹ƒ_‚ª‘¶İ‚µ‚È‚¢ê‡‚Íì¬ ===
+' === ï¿½wï¿½ï¿½tï¿½Hï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½Íì¬ ===
 Sub EnsureFolderExists(ByVal folderPath As String)
     If Dir(folderPath, vbDirectory) = "" Then MkDir folderPath
 End Sub
 
-' === ƒtƒ@ƒCƒ‹–¼‚©‚çŠg’£q‚ğœ‚¢‚½Šî–{–¼‚ğæ“¾ ===
+' === ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½qï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{ï¿½ï¿½ï¿½ï¿½ï¿½æ“¾ ===
 Function GetFileBaseName(fileName As String) As String
     GetFileBaseName = Left(fileName, InStrRev(fileName, ".") - 1)
 End Function
