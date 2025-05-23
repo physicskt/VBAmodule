@@ -21,7 +21,7 @@ Sub DoImportAllModules()
     Dim answer As VbMsgBoxResult
     Dim overwriteExisting As Boolean
 
-    answer = MsgBox("既存のモジュールを上書きしますか？" & vbCrLf & "Yes: 上書き / No: 上書きしない / Cancel: 中止", vbYesNoCancel + vbQuestion, "上書き確認")
+    answer = MsgBox("Do you want to overwrite existing modules ?", vbYesNoCancel + vbQuestion, "Overwrite confirmation")
     If answer = vbCancel Then
         MsgBox "キャンセルされました。", vbInformation
         Exit Sub
