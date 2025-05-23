@@ -1,38 +1,39 @@
 Attribute VB_Name = "BasManager"
 Option Explicit
 
-' === 定数定義 ===
+' === Constants ===
 Const EXT_BAS As String = ".bas"
 Const EXT_CLS As String = ".cls"
 Const EXT_FRM As String = ".frm"
 Const MODULE_TYPE_STANDARD As Long = 1
 Const MODULE_TYPE_CLASS As Long = 2
 Const MODULE_TYPE_FORM As Long = 3
-Dim path As String
 
 Sub DoExportAllModules()
+    Dim path As String
     path = ThisWorkbook.path & Application.PathSeparator & "ExportedModules"
     Call ExportAllModules(path)
 End Sub
 
 Sub DoImportAllModules()
-    Dim fd As fileDialog
+    Dim fd As FileDialog
+    Dim path As String
     
-    ' フォルダ選択ダイアログの作成
+    ' Create folder selection dialog
     Set fd = Application.fileDialog(msoFileDialogFolderPicker)
     
     path = ""
     With fd
-        .Title = "インポートするフォルダを選択してください"
+        .Title = "Select folder to import from"
         .AllowMultiSelect = False
         .InitialFileName = ThisWorkbook.path & Application.PathSeparator
         
-        ' ダイアログ表示
-        If .Show = -1 Then ' ユーザーが「OK」を押した場合
+        ' Show dialog
+        If .Show = -1 Then ' If user clicked "OK"
             path = .SelectedItems(1)
-            MsgBox "選択されたフォルダ: " & path
+            MsgBox "Selected folder: " & path
         Else
-            MsgBox "キャンセルされました"
+            MsgBox "Cancelled"
             Exit Sub
         End If
     End With
@@ -41,7 +42,7 @@ Sub DoImportAllModules()
     
 End Sub
 
-' === すべてのモジュールをエクスポート ===
+' === Export all modules ===
 Sub ExportAllModules(exportPath As String)
     On Error GoTo ErrHandler
 
@@ -52,20 +53,20 @@ Sub ExportAllModules(exportPath As String)
         ExportModule vbComp, exportPath
     Next vbComp
 
-    MsgBox "モジュールのエクスポートが完了しました。" & vbCrLf & exportPath, vbInformation
+    MsgBox "Successfully exported modules." & vbCrLf & exportPath, vbInformation
     Exit Sub
 
 ErrHandler:
-    MsgBox "エクスポート中にエラーが発生しました: " & Err.Description, vbCritical
+    MsgBox "Error during export: " & Err.Description, vbCritical
 End Sub
 
 
-' === すべてのモジュールをインポート（同名既存はスキップ） ===
+' === Import all modules (skip if exists) ===
 Sub ImportAllModules(importPath As String)
     On Error GoTo ErrHandler
 
     If Dir(importPath, vbDirectory) = "" Then
-        MsgBox "指定されたフォルダが存在しません: " & importPath, vbExclamation
+        MsgBox "Specified folder does not exist: " & importPath, vbExclamation
         Exit Sub
     End If
 
@@ -78,21 +79,36 @@ Sub ImportAllModules(importPath As String)
     Next vbComp
 
     Dim fileName As String
+    Dim fileExtension As String
+    Dim fullPath As String
+    
+    ' Ensure importPath ends with a path separator
+    If Right(importPath, 1) <> Application.PathSeparator Then
+        importPath = importPath & Application.PathSeparator
+    End If
+    
     fileName = Dir(importPath & "*.*")
 
     Do While fileName <> ""
-        Call ImportSingleModule(importPath & fileName, existingModules)
+        fileExtension = LCase(Right(fileName, 4))
+        
+        ' Only process .bas, .cls, and .frm files
+        If fileExtension = EXT_BAS Or fileExtension = EXT_CLS Or fileExtension = EXT_FRM Then
+            fullPath = importPath & fileName
+            Call ImportSingleModule(fullPath, existingModules)
+        End If
+        
         fileName = Dir
     Loop
 
-    MsgBox "モジュールのインポートが完了しました。", vbInformation
+    MsgBox "Successfully imported modules.", vbInformation
     Exit Sub
 
 ErrHandler:
-    MsgBox "インポート中にエラーが発生しました: " & Err.Description, vbCritical
+    MsgBox "Error during import: " & Err.Description, vbCritical
 End Sub
 
-' === 単一ファイルのモジュールをインポート（辞書で存在チェック） ===
+' === Import single module file (check for existence) ===
 Sub ImportSingleModule(fullPath As String, existingModules As Object)
     Dim baseName As String
     baseName = GetFileBaseName(Dir(fullPath))
@@ -102,7 +118,7 @@ Sub ImportSingleModule(fullPath As String, existingModules As Object)
     End If
 End Sub
 
-' === モジュールをエクスポート（種類に応じて拡張子を決定） ===
+' === Export module (set extension by type) ===
 Sub ExportModule(vbComp As Object, exportPath As String)
     Dim fileExt As String
     Select Case vbComp.Type
@@ -113,17 +129,16 @@ Sub ExportModule(vbComp As Object, exportPath As String)
     End Select
 
     Dim fullPath As String
-    fullPath = exportPath & "\" & vbComp.Name & fileExt
+    fullPath = exportPath & Application.PathSeparator & vbComp.Name & fileExt
     vbComp.Export fullPath
 End Sub
 
-' === 指定フォルダが存在しない場合は作成 ===
+' === Create folder if it doesn't exist ===
 Sub EnsureFolderExists(ByVal folderPath As String)
     If Dir(folderPath, vbDirectory) = "" Then MkDir folderPath
 End Sub
 
-' === ファイル名から拡張子を除いた基本名を取得 ===
+' === Get base name from file name without extension ===
 Function GetFileBaseName(fileName As String) As String
     GetFileBaseName = Left(fileName, InStrRev(fileName, ".") - 1)
 End Function
-
