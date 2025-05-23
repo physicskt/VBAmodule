@@ -16,7 +16,7 @@ Sub DoExportAllModules()
 End Sub
 
 Sub DoImportAllModules()
-    Dim fd As FileDialog
+    Dim fd As fileDialog
     Dim path As String
     
     ' Create folder selection dialog
