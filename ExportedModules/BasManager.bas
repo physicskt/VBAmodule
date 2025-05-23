@@ -15,10 +15,22 @@ Sub DoExportAllModules()
     Call ExportAllModules(path)
 End Sub
 
-Sub DoImportAllModules(Optional overwriteExisting As Boolean = False)
+Sub DoImportAllModules()
     Dim fd As fileDialog
     Dim path As String
-    
+    Dim answer As VbMsgBoxResult
+    Dim overwriteExisting As Boolean
+
+    answer = MsgBox("既存のモジュールを上書きしますか？" & vbCrLf & "Yes: 上書き / No: 上書きしない / Cancel: 中止", vbYesNoCancel + vbQuestion, "上書き確認")
+    If answer = vbCancel Then
+        MsgBox "キャンセルされました。", vbInformation
+        Exit Sub
+    ElseIf answer = vbYes Then
+        overwriteExisting = True
+    Else
+        overwriteExisting = False
+    End If
+
     ' Create folder selection dialog
     Set fd = Application.fileDialog(msoFileDialogFolderPicker)
     
