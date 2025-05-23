@@ -47,6 +47,13 @@ To import VBA modules into your workbook:
 3. The modules will be imported into your workbook (existing modules with the same name will not be overwritten)
 4. A message will appear when the import is complete
 
+To import VBA modules with the option to overwrite existing modules:
+
+1. Run the `DoImportAllModules(True)` subroutine
+2. A dialog will appear for you to select the folder containing the modules
+3. The modules will be imported into your workbook (existing modules with the same name will be overwritten)
+4. A message will appear when the import is complete
+
 ### Contribution
 
 Contributions to this project are welcome! Here's how you can contribute:
@@ -109,6 +116,13 @@ VBA モジュールをワークブックにインポートするには：
 1. `DoImportAllModules()` サブルーチンを実行する
 2. モジュールを含むフォルダを選択するためのダイアログが表示される
 3. モジュールがワークブックにインポートされる（同じ名前の既存モジュールは上書きされない）
+4. インポートが完了すると、メッセージが表示される
+
+既存のモジュールを上書きするオプション付きで VBA モジュールをインポートするには：
+
+1. `DoImportAllModules(True)` サブルーチンを実行する
+2. モジュールを含むフォルダを選択するためのダイアログが表示される
+3. モジュールがワークブックにインポートされる（同じ名前の既存モジュールは上書きされる）
 4. インポートが完了すると、メッセージが表示される
 
 ### 貢献方法
