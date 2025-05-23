@@ -15,8 +15,8 @@ Sub DoExportAllModules()
     Call ExportAllModules(path)
 End Sub
 
-Sub DoImportAllModules()
-    Dim fd As FileDialog
+Sub DoImportAllModules(Optional overwriteExisting As Boolean = False)
+    Dim fd As fileDialog
     Dim path As String
     
     ' Create folder selection dialog
@@ -38,7 +38,7 @@ Sub DoImportAllModules()
         End If
     End With
     
-    Call ImportAllModules(path)
+    Call ImportAllModules(path, overwriteExisting)
     
 End Sub
 
@@ -61,8 +61,8 @@ ErrHandler:
 End Sub
 
 
-' === Import all modules (skip if exists) ===
-Sub ImportAllModules(importPath As String)
+' === Import all modules ===
+Sub ImportAllModules(importPath As String, Optional overwriteExisting As Boolean = False)
     On Error GoTo ErrHandler
 
     If Dir(importPath, vbDirectory) = "" Then
@@ -95,7 +95,7 @@ Sub ImportAllModules(importPath As String)
         ' Only process .bas, .cls, and .frm files
         If fileExtension = EXT_BAS Or fileExtension = EXT_CLS Or fileExtension = EXT_FRM Then
             fullPath = importPath & fileName
-            Call ImportSingleModule(fullPath, existingModules)
+            Call ImportSingleModule(fullPath, existingModules, overwriteExisting)
         End If
         
         fileName = Dir
@@ -109,12 +109,22 @@ ErrHandler:
 End Sub
 
 ' === Import single module file (check for existence) ===
-Sub ImportSingleModule(fullPath As String, existingModules As Object)
+Sub ImportSingleModule(fullPath As String, existingModules As Object, overwriteExisting As Boolean)
     Dim baseName As String
     baseName = GetFileBaseName(Dir(fullPath))
 
     If Not existingModules.Exists(baseName) Then
         ThisWorkbook.VBProject.vBComponents.Import fullPath
+    ElseIf overwriteExisting Then
+        ' Remove existing module first
+        Dim vbComp As Object
+        For Each vbComp In ThisWorkbook.VBProject.vBComponents
+            If vbComp.Name = baseName Then
+                ThisWorkbook.VBProject.vBComponents.Remove vbComp
+                ThisWorkbook.VBProject.vBComponents.Import fullPath
+                Exit For
+            End If
+        Next vbComp
     End If
 End Sub
 
